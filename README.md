@@ -17,7 +17,12 @@ An AI-powered chatbot that transcribes call center audio recordings using OpenAI
 ```bash
 cd backend
 pip install -r requirements.txt
-pip install openai-whisper
+```
+
+**(Optional) For NVIDIA GPU acceleration:**
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu126 --force-reinstall
 ```
 
 Create a `backend/.env` file:
