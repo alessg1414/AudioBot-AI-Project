@@ -84,7 +84,12 @@ def ask():
         response = query_engine.query(question)
         return jsonify({"answer": str(response)})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        error_str = str(e)
+        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+            return jsonify({"error": "rate_limit"}), 429
+        if "503" in error_str or "UNAVAILABLE" in error_str:
+            return jsonify({"error": "unavailable"}), 503
+        return jsonify({"error": error_str}), 500
 
 
 if __name__ == "__main__":
