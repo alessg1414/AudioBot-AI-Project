@@ -75,6 +75,7 @@ Open `http://localhost:5173` in your browser and start asking questions about th
 - **System prompt guard** — The bot refuses to answer questions unrelated to the call transcription
 - **Timestamped segments** — The transcription output includes per-segment timestamps
 - **Real-time chat UI** — Clean React interface with typing indicators and auto-scroll
+> **Note:** The system is configured for Spanish. Whisper transcribes with `language="es"`, the system prompt and UI labels are in Spanish, and error messages displayed to the user are also in Spanish.
 
 ## 🧰 Tech Stack
 
