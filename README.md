@@ -1,16 +1,105 @@
-# React + Vite
+# 🎧 AudioBot AI — Call Center Audio Analyzer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered chatbot that transcribes call center audio recordings using OpenAI Whisper and lets you ask questions about the conversation through a RAG pipeline powered by Google Gemini and LlamaIndex.
 
-Currently, two official plugins are available:
+## 📦 Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Prerequisites
 
-## React Compiler
+- Python 3.10+
+- Node.js 18+
+- [ffmpeg](https://ffmpeg.org/) (required by Whisper)
+- A [Google Gemini API key](https://aistudio.google.com/apikey)
+- NVIDIA GPU recommended (CUDA-enabled PyTorch for faster transcription)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Backend
 
-## Expanding the ESLint configuration
+```bash
+cd backend
+pip install -r requirements.txt
+pip install openai-whisper
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Create a `backend/.env` file:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+TRANSCRIPTION_PATH=C:\audio\call.txt
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+## 🛠 Usage
+
+The project runs in three phases:
+
+### 1. Transcribe Audio
+
+Place your audio file at the path configured in `LoadAudio.py` (default: `C:\audio\Grabacion.mp3`) and run:
+
+```bash
+cd backend
+python LoadAudio.py
+```
+
+This generates a `call.txt` file with the full transcription and timestamped segments.
+
+### 2. Start the Backend Server
+
+```bash
+cd backend
+python app.py
+```
+
+The Flask server starts at `http://localhost:8090`. It loads the transcription, builds a vector index, and exposes a query API.
+
+### 3. Start the Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser and start asking questions about the call.
+
+## ✨ Features
+
+- **GPU-accelerated transcription** — Automatically uses CUDA if available (tested on RTX 4070 Super)
+- **Whisper large-v3** — Maximum accuracy speech-to-text with beam search and optimized parameters
+- **RAG-based Q&A** — Questions are answered strictly from the call content, not general knowledge
+- **System prompt guard** — The bot refuses to answer questions unrelated to the call transcription
+- **Timestamped segments** — The transcription output includes per-segment timestamps
+- **Real-time chat UI** — Clean React interface with typing indicators and auto-scroll
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Transcription | OpenAI Whisper (large-v3) + PyTorch CUDA |
+| LLM | Google Gemini 2.5 Flash |
+| Embeddings | Gemini Embedding 001 |
+| RAG Framework | LlamaIndex (VectorStoreIndex) |
+| Backend | Flask + flask-cors |
+| Frontend | React 19 + Vite |
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/status` | Returns `{"ready": true/false}` depending on whether a transcription is loaded |
+| `GET` | `/ask?q=<question>` | Queries the RAG engine and returns `{"answer": "..."}` |
+
+## 📄 License
+
+MIT License
+
+## 🙌 Credits
+
+- [OpenAI Whisper](https://github.com/openai/whisper) for speech-to-text
+- [LlamaIndex](https://github.com/run-llama/llama_index) for the RAG pipeline
+- [Google Gemini](https://ai.google.dev/) for LLM and embeddings
