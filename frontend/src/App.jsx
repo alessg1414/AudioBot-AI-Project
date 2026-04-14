@@ -40,9 +40,9 @@ function App() {
       const res = await fetch(`${API_BASE}/ask?q=${encodeURIComponent(question)}`)
       const data = await res.json()
       if (data.error === 'rate_limit') {
-        showToast('⚠️ Se ha alcanzado el límite diario de solicitudes a la API. Inténtelo de nuevo más tarde.')
+        showToast('Se ha alcanzado el límite diario de solicitudes a la API. Inténtelo de nuevo más tarde.')
       } else if (data.error === 'unavailable') {
-        showToast('⚠️ El modelo está experimentando una alta demanda. Inténtelo de nuevo en un momento.')
+        showToast('El modelo está experimentando una alta demanda. Inténtelo de nuevo en un momento.')
       } else if (data.error) {
         setMessages(prev => [...prev, { role: 'bot', text: `Error: ${data.error}` }])
       } else {
@@ -74,7 +74,7 @@ function App() {
       <main className="chat-messages">
         {!ready && ready !== null && (
           <div className="system-message">
-            No hay transcripción disponible. Ejecute <code>LoadAudio.py</code> primero para procesar un audio.
+            No hay transcripción disponible. Asegúrese de precargar el audio a transcribir.
           </div>
         )}
         {messages.map((msg, i) => (
